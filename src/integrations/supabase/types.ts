@@ -14,16 +14,160 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      policies: {
+        Row: {
+          coverage_amount: number
+          created_at: string
+          created_by: string
+          description: string | null
+          duration_months: number
+          id: string
+          name: string
+          premium_amount: number
+          status: Database["public"]["Enums"]["policy_status"]
+          updated_at: string
+        }
+        Insert: {
+          coverage_amount: number
+          created_at?: string
+          created_by: string
+          description?: string | null
+          duration_months?: number
+          id?: string
+          name: string
+          premium_amount: number
+          status?: Database["public"]["Enums"]["policy_status"]
+          updated_at?: string
+        }
+        Update: {
+          coverage_amount?: number
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          duration_months?: number
+          id?: string
+          name?: string
+          premium_amount?: number
+          status?: Database["public"]["Enums"]["policy_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          created_at: string
+          date_of_birth: string | null
+          full_name: string
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          full_name: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          full_name?: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_policies: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          policy_id: string
+          premium_paid: number
+          start_date: string
+          status: Database["public"]["Enums"]["user_policy_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          policy_id: string
+          premium_paid: number
+          start_date?: string
+          status?: Database["public"]["Enums"]["user_policy_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          policy_id?: string
+          premium_paid?: number
+          start_date?: string
+          status?: Database["public"]["Enums"]["user_policy_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_policies_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      policy_status: "active" | "inactive" | "expired" | "cancelled"
+      user_policy_status: "pending" | "active" | "cancelled" | "expired"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +294,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      policy_status: ["active", "inactive", "expired", "cancelled"],
+      user_policy_status: ["pending", "active", "cancelled", "expired"],
+    },
   },
 } as const
