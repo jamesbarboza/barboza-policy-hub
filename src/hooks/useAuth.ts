@@ -27,7 +27,7 @@ export const useAuth = () => {
   };
 
   const setLoadingWithTimeout = (isLoading: boolean) => {
-    console.log('Setting loading to:', isLoading);
+    console.log('Setting loading to:', isLoading, 'at', new Date().toLocaleTimeString());
     setLoading(isLoading);
     
     if (isLoading) {
@@ -36,7 +36,7 @@ export const useAuth = () => {
       
       // Set new timeout - reduced to 5 seconds for faster recovery
       timeoutRef.current = setTimeout(() => {
-        console.warn('Auth loading timeout - forcing loading to false');
+        console.warn('Auth loading timeout - forcing loading to false at', new Date().toLocaleTimeString());
         setLoading(false);
       }, 5000);
     } else {
@@ -80,14 +80,17 @@ export const useAuth = () => {
     } catch (error) {
       console.error('Error fetching user role:', error);
       setUserRole('user');
-    } finally {
-      console.log('Setting loading to false after role fetch');
-      setLoadingWithTimeout(false);
     }
+    // Note: Don't set loading to false here - let the main auth flow handle it
   };
 
   useEffect(() => {
     console.log('useAuth: Starting authentication initialization...');
+    
+    // Reset state on mount to ensure clean state on refresh
+    setUser(null);
+    setUserRole(null);
+    setLoadingWithTimeout(true);
     
     // Set a very short timeout to prevent getting stuck
     const quickTimeout = setTimeout(() => {
@@ -140,6 +143,8 @@ export const useAuth = () => {
         
         if (session?.user) {
           await fetchUserRole(session.user.id);
+          // Set loading to false after role is fetched
+          setLoadingWithTimeout(false);
         } else {
           clearTimeout(quickTimeout);
           setLoadingWithTimeout(false);
@@ -161,6 +166,8 @@ export const useAuth = () => {
         
         if (session?.user) {
           await fetchUserRole(session.user.id);
+          // Set loading to false after role is fetched
+          setLoadingWithTimeout(false);
         } else {
           setUserRole(null);
           setLoadingWithTimeout(false);
