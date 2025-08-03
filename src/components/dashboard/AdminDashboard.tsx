@@ -364,7 +364,7 @@ export const AdminDashboard = () => {
       {searchResults && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle id="searched-user-details" className="flex items-center gap-2">
               <User className="h-5 w-5" />
               User Details & Policies
             </CardTitle>
