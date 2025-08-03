@@ -8,8 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 
 export const AuthForm = () => {
-  const { signIn, signUp } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { signIn, signUp, loading } = useAuth();
+  const [formLoading, setFormLoading] = useState(false);
 
   const [signInData, setSignInData] = useState({
     email: '',
@@ -24,7 +24,7 @@ export const AuthForm = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
 
     try {
       const { error } = await signIn(signInData.email, signInData.password);
@@ -34,26 +34,22 @@ export const AuthForm = () => {
           description: error.message,
           variant: 'destructive',
         });
-      } else {
-        toast({
-          title: 'Success',
-          description: 'Signed in successfully!',
-        });
+        setFormLoading(false);
       }
+      // Don't set loading to false here - let the useAuth hook handle it
     } catch (error) {
       toast({
         title: 'Error',
         description: 'An unexpected error occurred',
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
 
     try {
       const { error } = await signUp(signUpData.email, signUpData.password, signUpData.fullName);
@@ -63,11 +59,13 @@ export const AuthForm = () => {
           description: error.message,
           variant: 'destructive',
         });
+        setFormLoading(false);
       } else {
         toast({
           title: 'Success',
           description: 'Account created successfully! Please check your email to verify your account.',
         });
+        setFormLoading(false);
       }
     } catch (error) {
       toast({
@@ -75,10 +73,11 @@ export const AuthForm = () => {
         description: 'An unexpected error occurred',
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
+
+  const isButtonLoading = loading || formLoading;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -105,6 +104,7 @@ export const AuthForm = () => {
                     value={signInData.email}
                     onChange={(e) => setSignInData({ ...signInData, email: e.target.value })}
                     required
+                    disabled={isButtonLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -115,10 +115,11 @@ export const AuthForm = () => {
                     value={signInData.password}
                     onChange={(e) => setSignInData({ ...signInData, password: e.target.value })}
                     required
+                    disabled={isButtonLoading}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Signing in...' : 'Sign In'}
+                <Button type="submit" className="w-full" disabled={isButtonLoading}>
+                  {isButtonLoading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
             </TabsContent>
@@ -134,6 +135,7 @@ export const AuthForm = () => {
                     value={signUpData.fullName}
                     onChange={(e) => setSignUpData({ ...signUpData, fullName: e.target.value })}
                     required
+                    disabled={isButtonLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -145,6 +147,7 @@ export const AuthForm = () => {
                     value={signUpData.email}
                     onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
                     required
+                    disabled={isButtonLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -155,10 +158,11 @@ export const AuthForm = () => {
                     value={signUpData.password}
                     onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}
                     required
+                    disabled={isButtonLoading}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Creating account...' : 'Sign Up'}
+                <Button type="submit" className="w-full" disabled={isButtonLoading}>
+                  {isButtonLoading ? 'Creating account...' : 'Sign Up'}
                 </Button>
               </form>
             </TabsContent>
