@@ -338,7 +338,8 @@ export const AdminDashboard = () => {
               </p>
             </div>
             <div className="flex items-end">
-              <Button 
+              <Button
+                id='search-user-button'  
                 onClick={searchUserByEmail} 
                 disabled={searching || !searchEmail.trim()}
               >
