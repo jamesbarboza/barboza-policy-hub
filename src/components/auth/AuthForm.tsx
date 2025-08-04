@@ -96,7 +96,7 @@ export const AuthForm = () => {
             zIndex: 1000
           }}>
             <p>click on the close button to contiue</p>
-            <button className='w-full bg-primary text-primary-foreground' onClick={() => {
+            <button id="popup-skip" className='w-full bg-primary text-primary-foreground' onClick={() => {
                 setShowPopup(false);
                 setShowAuthForm(true);
               }}>Close</button>
