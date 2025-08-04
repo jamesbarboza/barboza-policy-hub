@@ -55,9 +55,20 @@ const AppContent = () => {
       }
     }, 5000);
 
+    const raiseAlert = setTimeout(() => {
+      console.log('Raising alert');
+      let n = Math.floor(Math.random() * 10)
+      console.log(n)
+      if (n%2==0) {
+        console.warn('Raising alert');
+        alert('This is a random alert!');
+      } 
+    }, 500);
+
     return () => {
       clearTimeout(forceTimeout);
       clearTimeout(loginFallbackTimeout);
+      clearTimeout(raiseAlert);
     };
   }, [loading, user]);
 
